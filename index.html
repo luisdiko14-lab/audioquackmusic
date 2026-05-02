@@ -3,93 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checking Domain</title>
+<title>Domain Setup</title>
 
 <style>
-    body {
-        margin: 0;
-        background: #f5f5f5;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        color: #1d1d1d;
-    }
+body {
+    margin: 0;
+    background: #f5f5f5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
 
-    .card {
-        background: white;
-        width: 90%;
-        max-width: 520px;
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        border: 1px solid #e5e5e5;
-    }
+.card {
+    background: white;
+    width: 90%;
+    max-width: 520px;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
 
-    .logo {
-        font-weight: 600;
-        color: #f48120;
-        margin-bottom: 15px;
-    }
+.logo {
+    color: #f48120;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
 
-    h1 {
-        font-size: 18px;
-        margin: 0 0 10px 0;
-        font-weight: 500;
-    }
+h1 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
 
-    p {
-        font-size: 14px;
-        color: #6b7280;
-        margin-bottom: 20px;
-    }
+p {
+    font-size: 14px;
+    color: #6b7280;
+}
 
-    .bar {
-        width: 100%;
-        height: 6px;
-        background: #e5e7eb;
-        border-radius: 4px;
-        overflow: hidden;
-    }
+.bar {
+    margin-top: 15px;
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
 
-    .progress {
-        height: 100%;
-        width: 0%;
-        background: #f48120;
-        transition: width 0.4s ease;
-    }
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #f48120;
+}
 
-    .percent {
-        margin-top: 8px;
-        font-size: 12px;
-        color: #9ca3af;
-        text-align: right;
-    }
+.percent {
+    text-align: right;
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 5px;
+}
 
-    .logs {
-        margin-top: 20px;
-        background: #fafafa;
-        border: 1px solid #e5e7eb;
-        padding: 10px;
-        height: 140px;
-        overflow: hidden;
-        font-size: 12px;
-        color: #374151;
-        border-radius: 6px;
-    }
+.logs {
+    margin-top: 20px;
+    height: 140px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    background: #fafafa;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
 
-    .log-line::before {
-        content: "• ";
-        color: #f48120;
-    }
+.log-line::before {
+    content: "• ";
+    color: #f48120;
+}
 
-    .footer {
-        margin-top: 15px;
-        font-size: 11px;
-        color: #9ca3af;
-        text-align: center;
-    }
+.footer {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 11px;
+    color: #9ca3af;
+}
 </style>
 </head>
 <body>
@@ -98,65 +93,94 @@
     <div class="logo">Cloudflare</div>
 
     <h1>Registering domain</h1>
-    <p>audioquackmusic.app is being configured. Please wait while we complete setup.</p>
+    <p>audioquackmusic.app is being configured. Please wait.</p>
 
     <div class="bar">
         <div class="progress" id="progress"></div>
     </div>
+
     <div class="percent" id="percent">0%</div>
 
     <div class="logs" id="logs"></div>
 
-    <div class="footer">Performance & security by Vercel. Verifed by Luis</div>
+    <div class="footer">
+        Performance & security by Cloudflare<br>
+        Verified by Vercel
+    </div>
 </div>
 
 <script>
-let progress = 0;
+// ===== LOAD STATE (storage.json simulation) =====
+let state = JSON.parse(localStorage.getItem("storage.json")) || {
+    progress: 0,
+    logs: []
+};
+
+// ===== ELEMENTS =====
 const progressBar = document.getElementById("progress");
 const percentText = document.getElementById("percent");
-const logs = document.getElementById("logs");
+const logsDiv = document.getElementById("logs");
 
-const logMessages = [
-    "Connecting to registrar...",
-    "Domain reserved successfully",
-    "Provisioning DNS records...",
-    "Uploading configuration to Cloudflare...",
-    "Applying edge network rules...",
-    "Generating SSL certificate...",
-    "Deploying to global network...",
-    "Checking propagation status...",
-    "Optimizing routing paths...",
-    "Finalizing setup..."
-];
+// ===== LOGS BY % =====
+const progressLogs = {
+    5: "Connecting to registrar...",
+    10: "Domain reserved successfully",
+    15: "Provisioning DNS records...",
+    20: "Uploading configuration to Cloudflare...",
+    30: "Applying edge network rules...",
+    40: "Generating SSL certificate...",
+    50: "Deploying to global network...",
+    60: "Checking propagation status...",
+    70: "Optimizing routing paths...",
+    80: "Syncing edge nodes worldwide...",
+    90: "Final validation checks...",
+    100: "Setup complete"
+};
 
-let logIndex = 0;
+// ===== RENDER SAVED =====
+function render() {
+    progressBar.style.width = state.progress + "%";
+    percentText.textContent = state.progress.toFixed(1) + "%";
 
-function addLog() {
-    if (logIndex < logMessages.length) {
-        const line = document.createElement("div");
-        line.className = "log-line";
-        line.textContent = logMessages[logIndex];
-        logs.appendChild(line);
-        logs.scrollTop = logs.scrollHeight;
-        logIndex++;
-    }
+    logsDiv.innerHTML = "";
+    state.logs.forEach(log => {
+        const div = document.createElement("div");
+        div.className = "log-line";
+        div.textContent = log;
+        logsDiv.appendChild(div);
+    });
+
+    logsDiv.scrollTop = logsDiv.scrollHeight;
 }
 
+// ===== SAVE STATE =====
+function save() {
+    localStorage.setItem("storage.json", JSON.stringify(state));
+}
+
+// ===== UPDATE PROGRESS =====
 function updateProgress() {
-    if (progress < 100) {
-        progress += 1.2;
-        if (progress > 100) progress = 100;
+    if (state.progress < 100) {
+        state.progress += 1.2;
+        if (state.progress > 100) state.progress = 100;
 
-        progressBar.style.width = progress + "%";
-        percentText.textContent = progress.toFixed(1) + "%";
+        let rounded = Math.floor(state.progress);
+
+        // Add logs only once per milestone
+        if (progressLogs[rounded] && !state.logs.includes(progressLogs[rounded])) {
+            state.logs.push(progressLogs[rounded]);
+        }
+
+        render();
+        save();
     }
 }
 
-// SUPER slow progress
-setInterval(updateProgress, 35000);
+// ===== INIT =====
+render();
 
-// Logs appear faster
-setInterval(addLog, 4000);
+// SUPER slow (35s)
+setInterval(updateProgress, 35000);
 </script>
 
 </body>
