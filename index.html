@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checking Domain</title>
+
+<style>
+    body {
+        margin: 0;
+        background: #f5f5f5;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        color: #1d1d1d;
+    }
+
+    .card {
+        background: white;
+        width: 90%;
+        max-width: 520px;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid #e5e5e5;
+    }
+
+    .logo {
+        font-weight: 600;
+        color: #f48120;
+        margin-bottom: 15px;
+    }
+
+    h1 {
+        font-size: 18px;
+        margin: 0 0 10px 0;
+        font-weight: 500;
+    }
+
+    p {
+        font-size: 14px;
+        color: #6b7280;
+        margin-bottom: 20px;
+    }
+
+    .bar {
+        width: 100%;
+        height: 6px;
+        background: #e5e7eb;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress {
+        height: 100%;
+        width: 0%;
+        background: #f48120;
+        transition: width 0.4s ease;
+    }
+
+    .percent {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #9ca3af;
+        text-align: right;
+    }
+
+    .logs {
+        margin-top: 20px;
+        background: #fafafa;
+        border: 1px solid #e5e7eb;
+        padding: 10px;
+        height: 140px;
+        overflow: hidden;
+        font-size: 12px;
+        color: #374151;
+        border-radius: 6px;
+    }
+
+    .log-line::before {
+        content: "• ";
+        color: #f48120;
+    }
+
+    .footer {
+        margin-top: 15px;
+        font-size: 11px;
+        color: #9ca3af;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<div class="card">
+    <div class="logo">Cloudflare</div>
+
+    <h1>Registering domain</h1>
+    <p>audioquackmusic.app is being configured. Please wait while we complete setup.</p>
+
+    <div class="bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    <div class="percent" id="percent">0%</div>
+
+    <div class="logs" id="logs"></div>
+
+    <div class="footer">Performance & security by Vercel. Verifed by Luis</div>
+</div>
+
+<script>
+let progress = 0;
+const progressBar = document.getElementById("progress");
+const percentText = document.getElementById("percent");
+const logs = document.getElementById("logs");
+
+const logMessages = [
+    "Connecting to registrar...",
+    "Domain reserved successfully",
+    "Provisioning DNS records...",
+    "Uploading configuration to Cloudflare...",
+    "Applying edge network rules...",
+    "Generating SSL certificate...",
+    "Deploying to global network...",
+    "Checking propagation status...",
+    "Optimizing routing paths...",
+    "Finalizing setup..."
+];
+
+let logIndex = 0;
+
+function addLog() {
+    if (logIndex < logMessages.length) {
+        const line = document.createElement("div");
+        line.className = "log-line";
+        line.textContent = logMessages[logIndex];
+        logs.appendChild(line);
+        logs.scrollTop = logs.scrollHeight;
+        logIndex++;
+    }
+}
+
+function updateProgress() {
+    if (progress < 100) {
+        progress += 1.2;
+        if (progress > 100) progress = 100;
+
+        progressBar.style.width = progress + "%";
+        percentText.textContent = progress.toFixed(1) + "%";
+    }
+}
+
+// SUPER slow progress
+setInterval(updateProgress, 35000);
+
+// Logs appear faster
+setInterval(addLog, 4000);
+</script>
+
+</body>
+</html>
